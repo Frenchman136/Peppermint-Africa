@@ -1,0 +1,234 @@
+/* Fonts are self-hosted (installed with npm, see README). No Google Fonts requests. */
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/montserrat';
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views';
+@source '../js';
+@source '../../app/Livewire';
+
+/* ------------------------------------------------------------------ */
+/* Brand tokens (taken from the Peppermint logo)                      */
+/* ------------------------------------------------------------------ */
+@theme {
+    --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-display: 'Montserrat Variable', 'Montserrat', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+    --color-ink: #0a0a0a;
+    --color-leaf: #4caf0f;
+    --color-forest: #2a7a1f;
+    --color-mist: #f6f8f4;
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                               */
+/* ------------------------------------------------------------------ */
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 5rem;
+    }
+
+    body {
+        @apply bg-white font-sans text-ink antialiased;
+    }
+
+    h1, h2, h3, h4 {
+        @apply font-display;
+    }
+
+    ::selection {
+        background: var(--color-leaf);
+        color: var(--color-ink);
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-leaf);
+        outline-offset: 3px;
+    }
+}
+
+@layer components {
+    .container-x {
+        @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
+    }
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* Preloader (shown once per browser session)                         */
+/* ------------------------------------------------------------------ */
+#preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    background: var(--color-ink);
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#preloader.is-done {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.no-preloader #preloader {
+    display: none;
+}
+
+.preloader-leaf {
+    animation: leaf-pulse 1.3s ease-in-out infinite;
+}
+
+.preloader-bar > span {
+    display: block;
+    height: 100%;
+    background: var(--color-leaf);
+    transform-origin: left center;
+    animation: preloader-fill 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes leaf-pulse {
+    0%, 100% { transform: scale(0.92) rotate(-5deg); }
+    50% { transform: scale(1.06) rotate(5deg); }
+}
+
+@keyframes preloader-fill {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+/* Livewire wire:navigate progress bar, in brand green */
+#nprogress .bar {
+    background: var(--color-leaf) !important;
+    height: 3px !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll reveal (used with x-reveal; see resources/js/app.js)        */
+/* ------------------------------------------------------------------ */
+.js .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Client logo marquee (used from Phase 3)                            */
+/* ------------------------------------------------------------------ */
+.marquee-track {
+    animation: marquee 40s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+    animation-play-state: paused;
+}
+
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+/* ------------------------------------------------------------------ */
+/* Respect users who turn animations off                              */
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+
+    .js .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .preloader-leaf,
+    .preloader-bar > span,
+    .marquee-track {
+        animation: none;
+    }
+
+    #preloader {
+        transition: none;
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* Horizontal scrollers (featured work): hide the scrollbar           */
+/* ------------------------------------------------------------------ */
+.no-scrollbar {
+    scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Blog article typography (the post body is rendered Markdown)       */
+/* ------------------------------------------------------------------ */
+.article {
+    font-size: 1.125rem;
+    line-height: 1.85;
+    color: rgb(10 10 10 / 0.8);
+}
+.article > * + * {
+    margin-top: 1.4em;
+}
+.article h2 {
+    margin-top: 2.2em;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+}
+.article h3 {
+    margin-top: 1.8em;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--color-ink);
+}
+.article a {
+    color: var(--color-forest);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.article ul,
+.article ol {
+    padding-left: 1.4em;
+}
+.article ul {
+    list-style: disc;
+}
+.article ol {
+    list-style: decimal;
+}
+.article li + li {
+    margin-top: 0.4em;
+}
+.article blockquote {
+    border-left: 4px solid var(--color-leaf);
+    padding-left: 1.2em;
+    font-style: italic;
+    color: var(--color-ink);
+}
+.article strong {
+    color: var(--color-ink);
+}
+.article img {
+    border-radius: 1rem;
+}
